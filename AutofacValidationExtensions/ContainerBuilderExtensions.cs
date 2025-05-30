@@ -18,11 +18,19 @@ public static class ContainerBuilderExtensions
         registrationActualType.FullName!.StartsWith("Microsoft");
 
     public static ContainerBuilder ValidateOnBuild(
-        this ContainerBuilder containerBuilder,
-        Func<ValidationErrorBase, bool>? errorsFilter = null)
+        this ContainerBuilder containerBuilder)
     {
-        errorsFilter ??= _ => true;
-        containerBuilder.RegisterBuildCallback(ctx => ValidateScopeAndEnsureSuccess(ctx, errorsFilter));
+        containerBuilder.RegisterBuildCallback(ctx => 
+            ValidateScope(ctx).EnsureSuccess());
+        return containerBuilder;
+    }
+
+    public static ContainerBuilder ValidateOnBuild(
+        this ContainerBuilder containerBuilder,
+        Func<ValidationErrorBase, bool> shouldSkipErrorFilter)
+    {
+        containerBuilder.RegisterBuildCallback(ctx => 
+            ValidateScope(ctx).FilterErrors(shouldSkipErrorFilter).EnsureSuccess());
         return containerBuilder;
     }
 
@@ -37,11 +45,6 @@ public static class ContainerBuilderExtensions
         });
         return containerBuilder;
     }
-
-    private static void ValidateScopeAndEnsureSuccess(
-        IComponentContext scope,
-        Func<ValidationErrorBase, bool> errorsFilter) =>
-        ValidateScope(scope).FilterErrors(errorsFilter).EnsureSuccess();
 
     private static ContainerValidationResult ValidateScope(IComponentContext scope)
     {
