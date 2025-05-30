@@ -29,20 +29,25 @@ Let's say you have the following code:
 using Autofac;
 using AutofacValidationExtensions;
 
-namespace AutofacValidationExample;
+namespace Test;
 
 public static class Program
 {
     public class A { }
     public class B(A depsA) { }
-    public class C(A depsA) { }
+    public class C(B depsA) { }
     public class D(B depsA) { }
     
     public static void Main(string[] args)
     {
         var container = new ContainerBuilder();
         container.RegisterType<B>().AsSelf().InstancePerDependency();
-        container.Register(ctx => new C(ctx.Resolve<A>()));
+        container.Register(ctx =>
+        {
+            var aHiddenDep = ctx.Resolve<A>();
+            var bDep = new B(aHiddenDep);
+            return new C(bDep);
+        });
         container.RegisterType<D>().AsSelf().SingleInstance();
         container.ValidateOnBuild();
         container.Build();
