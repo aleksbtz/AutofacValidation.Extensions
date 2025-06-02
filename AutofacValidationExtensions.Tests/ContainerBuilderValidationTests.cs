@@ -184,18 +184,19 @@ private static IEnumerable<TestCaseData> RequiredServicesSearchErrorsTestCases
                 });
              
             //it will not be a problem to call scope.Resolve<InternalConstructor>();
-            //but it throw an error if call scope.Resolve<InternalConstructor[]>();     
-            yield return CreateTestCase(
-                builder => builder
-                    .AddSingleInstance<InternalConstructor>()
-                    .AddSingleInstance(_ => new InternalConstructor(new Deps1())),
-                new List<RequiredServicesSearchFailedError>()
-                {
-                    new(
-                        typeof(InternalConstructor), 
-                        typeof(InternalConstructor),
-                        RequiredServicesSearchStatus.NoAvailableConstructors), 
-                });
+            //but it throw an error if call scope.Resolve<InternalConstructor[]>();
+            //Ignore - Autofac 6.0.0 throw an error automatically     
+            // yield return CreateTestCase(
+            //     builder => builder
+            //         .AddSingleInstance<InternalConstructor>()
+            //         .AddSingleInstance(_ => new InternalConstructor(new Deps1())),
+            //     new List<RequiredServicesSearchFailedError>()
+            //     {
+            //         new(
+            //             typeof(InternalConstructor), 
+            //             typeof(InternalConstructor),
+            //             RequiredServicesSearchStatus.NoAvailableConstructors), 
+            //     });
 
             TestCaseData CreateTestCase(
                 Action<ContainerBuilder> registerTestServices,
