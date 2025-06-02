@@ -1,4 +1,4 @@
-This library allows you to validate [Autofac](https://github.com/autofac/Autofac) container for registration errors.
+This library allows to validate [Autofac](https://github.com/autofac/Autofac) container for registration errors.
 
 ## Main Features:
 * **Easy to use** - you don't need to modify or prepare the container in any way before using this library
@@ -29,14 +29,14 @@ Let's say you have the following code:
 using Autofac;
 using AutofacValidationExtensions;
 
-namespace Test;
+namespace Example;
 
 public static class Program
 {
     public class A { }
     public class B(A depsA) { }
-    public class C(B depsA) { }
-    public class D(B depsA) { }
+    public class C(B depsB) { }
+    public class D(B depsB) { }
     
     public static void Main(string[] args)
     {
