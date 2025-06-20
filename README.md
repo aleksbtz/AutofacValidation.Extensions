@@ -75,5 +75,14 @@ Other examples of validations with different registration variations can be foun
 * **MissingRegistration** - means that the delegate method is trying to resolve an entity from the container that is not registered. Used for Delegate-registration. 
 * **CaptiveDependency** - means that an entity with a long lifetime depends on an entity with a short lifetime. For example Scoped depends from Singleton. Used for both Reflection and Delegate registrations. 
 
-## Note:
-Developed and tested on `Autofac "5.2.0"`. There may be problems with use for older versions.
+## Limitations:
+* For delegate-registrations the library will work correctly only when the type of the required service is passed through a generic-type(`ctx.Resolve<T>()`). For example, in the following case the required type is passed through a `Resolve`-method parameter, and the dependency `TargetService`->`A` will not be detected:
+```
+builder
+  .Register(ctx =>
+  {
+    var wrappper = new WrapperForA(ctx.Resolve(typeof(A)))
+    return new TargetService(wrappper);  
+  });
+```
+* If the container uses advanced Autofact features, as well as tools from additional Nuget-packages, then validation may not work correctly or skip some errors. Examples of test containers, on which validation works well, can be found in the project with tests.
