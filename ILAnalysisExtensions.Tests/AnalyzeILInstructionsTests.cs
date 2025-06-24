@@ -173,8 +173,8 @@ public class AnalyzeILInstructionsTests
             {
                 void TestMethod()
                 {
-                    var lambdaWithoutCall = () => Console.WriteLine("Hello world");
-                    lambdaWithoutCall();
+                    var lambdaWithCall = () => Console.WriteLine("Hello world");
+                    lambdaWithCall();
                 }
 
                 return WrapLocalFuncToDelegate(TestMethod);
@@ -186,7 +186,7 @@ public class AnalyzeILInstructionsTests
                 void TestMethod()
                 {
                     var lambdaClosure = LocalLambdaWithCallTargetMethod;
-                    var trap = () => Console.WriteLine("Hello world");
+                    var trap = () => Console.Write("Hello world");
                     trap();
                     lambdaClosure();
                 }
@@ -203,7 +203,7 @@ public class AnalyzeILInstructionsTests
                 {
                     var lambdaClosure = LocalDelegateWithSameTypeAsExternalWithoutCall;
                     var lambdaType = lambdaClosure.Method;
-                    var trap = () => Console.WriteLine("Hello world");
+                    var trap = () => Console.Write("Hello world");
                     trap();
                 }                
 
