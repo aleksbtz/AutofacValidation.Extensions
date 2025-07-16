@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>AutofacValidation.Extensions</RootNamespace>
+        <Title>AutofacValidation.Extensions</Title>
+        <Authors>Aleksandr Butuzov</Authors>
+        <Description>An Autofac extensions library which allows to validate the container on-build for captive dependencies and missing registration.</Description>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageVersion>0.0.1</PackageVersion>
+        <PackageProjectUrl>https://github.com/aleksbtz/AutofacValidation.Extensions</PackageProjectUrl>
+        <PackageLicenseUrl>https://github.com/aleksbtz/AutofacValidation.Extensions/blob/master/LICENSE</PackageLicenseUrl>
+        <RepositoryUrl>https://github.com/aleksbtz/AutofacValidation.Extensions</RepositoryUrl>
+        <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="..\LICENSE" Pack="true" PackagePath="\"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ILAnalysis.Extensions\ILAnalysis.Extensions.csproj">
+          <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+          <IncludeAssets>ILAnalysis.Extensions.dll</IncludeAssets>
+      </ProjectReference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Autofac" Version="6.0.0" />
+    </ItemGroup>
+
+    <Target DependsOnTargets="ResolveReferences" Name="CopyProjectReferencesToPackage">
+        <ItemGroup>
+            <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))"/>
+        </ItemGroup>
+    </Target>
+
+</Project>
