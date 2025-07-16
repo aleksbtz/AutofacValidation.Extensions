@@ -33,23 +33,25 @@ namespace Example;
 
 public static class Program
 {
-    public class A { }
-    public class B(A depsA) { }
-    public class C(B depsB) { }
-    public class D(B depsB) { }
+    public class A { public string someString; }
+    public class B(A aDep) { }
+    public class C(string strDep, B bDep) { }
+    public class D(B bDep) { }
     
     public static void Main(string[] args)
     {
         var container = new ContainerBuilder();
+        
         container.RegisterType<B>().AsSelf().InstancePerDependency();
         container.Register(ctx =>
         {
             var aHiddenDep = ctx.Resolve<A>();
-            var bDep = new B(aHiddenDep);
-            return new C(bDep);
-        });
+            var bDep = ctx.Resolve<B>();
+            return new C(aHiddenDep.someString, bDep);
+        }).SingleInstance();
         container.RegisterType<D>().AsSelf().SingleInstance();
         container.ValidateOnBuild();
+        
         container.Build();
     }  
 }
@@ -57,16 +59,19 @@ public static class Program
 
 On call the 'Build' method, the following error will be thrown:
 ```
-AutofacValidationExtensions.Models.Errors.DiValidationException: DI container validation errors:
+Unhandled exception. AutofacValidation.Extensions.Models.Errors.DiValidationException: DI container validation errors:
 RequiredServicesSearchFailed:
-	B registration has error: NotEnoughRegistrationsToUseAnyConstructors. Try add: A
+    B registration has error: NotEnoughRegistrationsToUseAnyConstructors. Try add: A
 
 MissingRegistration:
-	C requires the following types which are not registered: A
+    C requires the following types which are not registered: A
 
 CaptiveDependency:
-	D with lifetime Singleton captures the following types:
-		B with lifetime PerDependency
+    C with lifetime Singleton captures the following types:
+        B with lifetime PerDependency
+    D with lifetime Singleton captures the following types:
+        B with lifetime PerDependency
+
 ```
 Other examples of validations with different registration variations can be found in the project with tests.
 
