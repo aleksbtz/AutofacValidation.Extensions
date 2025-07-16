@@ -18,7 +18,6 @@ public static class ReflectionActivatorExtensions
         }
         catch (Exception)
         {
-            var a = 0;
             // ignored
         }
 
